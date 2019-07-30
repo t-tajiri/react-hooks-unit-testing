@@ -1,23 +1,24 @@
 import React from 'react';
-import { shallow } from 'enzyme';
-import sinon from 'sinon';
-
-import * as hooks from '../store/hooks';
+import { mount } from 'enzyme';
 import App from '../App';
 
+const mockDispatch = jest.fn();
+
+jest.mock('react-redux', () => ({
+    useSelector: () => 4,
+    useDispatch: () => mockDispatch
+}));
 
 describe('Appコンポーネント', () => {
-  const increment = jest.fn();
 
-  sinon.stub(hooks, 'useCounter').returns({
-    count: 1,
-    increment
-  });
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
 
   it('Redux Hooks', () => {
-    const component = shallow(<App />);
+    const component = mount(<App />);
 
     component.find('button').simulate('click');
-    expect(increment).toBeCalled();
+    expect(mockDispatch).toBeCalled();
   })
 });
